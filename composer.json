@@ -1,5 +1,5 @@
 {
-    "name": "aego/oauth2-mailru",
+    "name": "max107/oauth2-mailru",
     "description": "Mail.ru provider for league/oauth2-client",
     "license": "MIT",
     "authors": [
@@ -9,20 +9,19 @@
         }
     ],
     "require": {
-        "php": "~5.4",
-        "league/oauth2-client": "~0.5"
+        "league/oauth2-client": "*"
     },
     "require-dev": {
         "phpunit/phpunit": "~4.3"
     },
     "autoload": {
         "psr-4": {
-            "Aego\\OAuth2\\Client\\Provider\\": "src/"
+            "Max107\\OAuth2\\Client\\Provider\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Aego\\OAuth2\\Client\\Test\\Provider\\": "test/"
+            "Max107\\OAuth2\\Client\\Test\\Provider\\": "test/"
         }
     }
 }
