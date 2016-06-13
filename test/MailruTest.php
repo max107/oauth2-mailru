@@ -1,5 +1,6 @@
 <?php
-namespace Aego\OAuth2\Client\Test\Provider;
+
+namespace Max107\OAuth2\Client\Test\Provider;
 
 class MailruTest extends \PHPUnit_Framework_TestCase
 {
@@ -10,9 +11,9 @@ class MailruTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->response = json_decode('[{"uid":"1234567890123456789","email":"username@mail.ru","sex":0,'
-            .'"has_pic":1,"pic":"http://mock.ph/oto.jpg","first_name":"First","last_name":"Last",'
-            .'"location":{"country":{"name":"Россия","id":"24"},"city":{"name":"Тольятти","id":"561"},'
-            .'"region":{"name":"Самарская обл.","id":"246"}},"link":"http://my.mail.ru/mail/username/"}]');
+            . '"has_pic":1,"pic":"http://mock.ph/oto.jpg","first_name":"First","last_name":"Last",'
+            . '"location":{"country":{"name":"Россия","id":"24"},"city":{"name":"Тольятти","id":"561"},'
+            . '"region":{"name":"Самарская обл.","id":"246"}},"link":"http://my.mail.ru/mail/username/"}]');
         $this->provider = new \Aego\OAuth2\Client\Provider\Mailru([
             'clientId' => 'mock',
             'clientSecret' => 'mock_secret',
@@ -23,16 +24,19 @@ class MailruTest extends \PHPUnit_Framework_TestCase
         ]);
     }
 
-    public function testUrlUserDetails()
+    public function testUserDetails()
     {
-        $query = parse_url($this->provider->urlUserDetails($this->token), PHP_URL_QUERY);
-        parse_str($query, $param);
-
-        $this->assertEquals($this->token->accessToken, $param['session_key']);
-        $this->assertEquals($this->provider->clientId, $param['app_id']);
-        $this->assertNotEmpty($param['sig']);
+        $user = new MailruUser($this->response);
+        $this->assertInstanceOf(MailruUser::class, $user);
+        $this->assertEquals($this->response['uid'], $user->getId());
+        $this->assertEquals($this->response['name'], $user->getName());
+        $this->assertEquals($this->response['locale'], $user->getLocale());
+        $this->assertEquals($this->response['gender'], $user->getGender());
+        $this->assertEquals($this->response['first_name'], $user->getFirstName());
+        $this->assertEquals($this->response['last_name'], $user->getLastName());
+        $this->assertEquals($this->response['pic_3'], $user->getImageUrl());
     }
-
+    
     public function testUserDetails()
     {
         $user = $this->provider->userDetails($this->response, $this->token);
@@ -41,12 +45,22 @@ class MailruTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($res->uid, $user->uid);
         $this->assertEquals($res->email, $user->email);
         $this->assertEquals($res->location->city->name, $user->location);
-        $this->assertEquals($res->first_name.' '.$res->last_name, $user->name);
+        $this->assertEquals($res->first_name . ' ' . $res->last_name, $user->name);
         $this->assertEquals($res->first_name, $user->firstName);
         $this->assertEquals($res->last_name, $user->lastName);
         $this->assertEquals($res->pic, $user->imageUrl);
         $this->assertEquals('male', $user->gender);
         $this->assertNotEmpty($user->urls);
+    }
+
+    public function testUrlUserDetails()
+    {
+        $query = parse_url($this->provider->getResourceOwnerDetailsUrl($this->token), PHP_URL_QUERY);
+        parse_str($query, $param);
+
+        $this->assertEquals($this->token->getToken(), $param['access_token']);
+        $this->assertEquals($this->provider->clientPublic, $param['application_key']);
+        $this->assertNotEmpty($param['sig']);
     }
 
     public function testUserDetailsEmpty()
