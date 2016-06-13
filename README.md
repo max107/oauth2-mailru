@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/max107/oauth2-mailru.svg)](https://travis-ci.org/max107/oauth2-mailru)
 [![Latest Version](https://img.shields.io/packagist/v/max107/oauth2-mailru.svg)](https://packagist.org/packages/max107/oauth2-mailru)
-[![License](https://img.shields.io/packagist/license/max107/oauth2-mailru.svg)](https://packagist.org/packages/max107/oauth2-mailru)
+[![License](https://img.shields.io/packagist/l/max107/oauth2-mailru.svg)](https://packagist.org/packages/max107/oauth2-mailru)
 
 This package provides [Mail.ru](http://my.mail.ru) integration for [OAuth2 Client](https://github.com/thephpleague/oauth2-client) by the League.
 
